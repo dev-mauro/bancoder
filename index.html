@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <title>Banco</title>
+</head>
+<body>
+    <h1 class="header-title">BANCODER</h1>
+
+    <div id="cuenta" class="panel">
+        <h3>Número de cuenta: <span id="numeroCuenta"></span></h2>
+        <p>Saldo: $<span id="saldo">0</span></p>
+    </div>
+
+    <div class="panel deposito">
+        <h3>Deposito</h3>
+        <label for="">Cantidad a depositar</label>
+        <div>
+            <span class="material-symbols-outlined symbol">
+                attach_money
+            </span>
+            <input type="number" placeholder="0" id="inputDeposito">
+        </div>
+        <button id="botonDeposito">Depositar</button>
+    </div>
+    
+    <div class="panel retiro">
+        <h3>Retiro</h3>
+        <label for="">Cantidad a retirar</label>
+        <div>
+            <span class="material-symbols-outlined symbol">
+                attach_money
+            </span>
+            <input type="number" placeholder="0" id="inputRetiro">
+        </div>
+        <button id="botonRetiro">Retirar</button>
+    </div>
+
+    <div id="aviso" class="hidde">
+        <h3>Saldo insuficiente</h3>
+        <p>Su saldo es insuficiente para realizar este retiro</p>
+        <button id="botonAviso">Entiendo</button>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
