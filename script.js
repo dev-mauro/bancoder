@@ -15,12 +15,16 @@ const isValidQuantity = (quantity) => {
     return false;
 }
 
-class bankAccout {
+//proximo commit
+//implementar botón para cambiar el orden en que se ordenan los movimientos
+// this.newerFirst = true => el más nuevo primero, al revés caso contrario
+
+class bankAccount {
     constructor(balance = 0) {
         this.accountNumber = createRandomAccNumber();
         this.balance = balance;
         this.balanceView = document.getElementById('saldo');
-
+        this.movementHistory = [];
         this.setAccountNumber();
     }
 
@@ -31,8 +35,10 @@ class bankAccout {
     }
 
     addFunds(money = 0) {
-        if(isValidQuantity(money))
+        if(isValidQuantity(money)){
+            this.addMovement(true, money);
             this.balance += Number(money);
+        }
 
         this.updateBalance();
     }
@@ -46,6 +52,7 @@ class bankAccout {
             return;
         }
 
+        this.addMovement(false, money);
         this.balance -= Number(money);
         this.updateBalance();
     }
@@ -54,9 +61,61 @@ class bankAccout {
         this.balanceView.innerHTML = this.balance;
     }
 
+    addMovement(add, money) {
+        const movement = new Movement(this, money, add);
+        this.movementHistory.push(movement);
+
+        this.updateHistory(movement);
+    }
+
+    updateHistory(movement) {
+        const historyElement = document.getElementById('movement-history');
+        historyElement.appendChild(movement.htmlElement);
+    }
+
     showWarning() {
         const aviso = document.getElementById('aviso');
         aviso.classList.remove('hidde');
+    }
+}
+
+
+
+class Movement {
+    //quntity = cantidad ingresada, add = true si se agregan fondos, false caso contrario
+    constructor(bankAccount,  quantity, add = true) {
+        this.initialBalance = bankAccount.balance;
+        this.date = new Date().toDateString();
+        this.quantity = quantity;
+        
+        let aux = 1; 
+        if(!add)
+            aux*= -1;
+
+        this.finalBalance = this.initialBalance + (quantity * aux);
+
+        this.htmlElement = this.buildHTMLElement(add);
+    }
+
+    buildHTMLElement(add) {
+        // Fecha -> Descripción -> Monto inicial -> valor -> monto final
+        let htmlElement = document.createElement('div');
+
+        let movementType = "Abono";
+        if(!add)
+            movementType = "Retiro";
+
+        htmlElement.innerHTML = `
+        <div class="movement">
+            <div class="movement-date">${this.date}</div>
+            <div class="movement-description">${movementType}</div>
+            <div class="movement-initial">$${this.initialBalance}</div>
+            <div class="movement-quantity">$${this.quantity}</div>
+            <div class="movement-final">$${this.finalBalance}</div>
+        </div>
+        `;
+
+        return htmlElement;
     }
 }
 
@@ -100,4 +159,4 @@ bankPanel.withdrawInput.addEventListener('change', () => {
         bankPanel.withdrawInput.value = 0;
 });
 
-const account = new bankAccout();
+const account = new bankAccount();
