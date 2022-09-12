@@ -237,3 +237,8 @@ input[type=number] {
     color: var(--main-green);
     font-size: 18px;
 }
+
+span.main-green {
+    color: var(--main-green);
+    font-size: 20px;
+}

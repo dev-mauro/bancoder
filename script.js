@@ -9,7 +9,7 @@ const createRandomAccNumber = (digits = 8) => {
 // Verifica que la cantidad enviada sea válida.
 // true solo si es un número mayor a 0
 const isValidQuantity = (quantity) => {
-    if(quantity >= 0 && !isNaN(quantity))
+    if(quantity > 0 && !isNaN(quantity))
         return true;
 
     return false;
@@ -102,15 +102,18 @@ class Movement {
         let htmlElement = document.createElement('div');
 
         let movementType = "Abono";
-        if(!add)
+        let symbol = '+';
+        if(!add){
+            symbol = '-';
             movementType = "Retiro";
+        }
 
         htmlElement.innerHTML = `
         <div class="movement">
             <div class="movement-date">${this.date}</div>
             <div class="movement-description">${movementType}</div>
             <div class="movement-initial">$${this.initialBalance}</div>
-            <div class="movement-quantity">$${this.quantity}</div>
+            <div class="movement-quantity"><span class="main-green">${symbol}</span>$${this.quantity}</div>
             <div class="movement-final">$${this.finalBalance}</div>
         </div>
         `;
