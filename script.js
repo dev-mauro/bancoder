@@ -6,7 +6,7 @@ class bankAccount {
         this.movementHistory = [];
         this.setAccountNumber();
 
-        this.newerFirst = false;
+        this.newerFirst = true;
     }
 
     setAccountNumber = () => {
