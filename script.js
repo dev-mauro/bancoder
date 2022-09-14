@@ -1,24 +1,3 @@
-const createRandomAccNumber = (digits = 8) => {
-    let numberLength = Math.pow(10, digits);
-    const randomNumber = Math.random();
-
-    const accountNumber = Math.trunc(randomNumber * numberLength);
-    return accountNumber;
-}
-
-// Verifica que la cantidad enviada sea válida.
-// true solo si es un número mayor a 0
-const isValidQuantity = (quantity) => {
-    if(quantity > 0 && !isNaN(quantity))
-        return true;
-
-    return false;
-}
-
-//proximo commit
-//implementar botón para cambiar el orden en que se ordenan los movimientos
-// this.newerFirst = true => el más nuevo primero, al revés caso contrario
-
 class bankAccount {
     constructor(balance = 0) {
         this.accountNumber = createRandomAccNumber();
@@ -26,6 +5,8 @@ class bankAccount {
         this.balanceView = document.getElementById('saldo');
         this.movementHistory = [];
         this.setAccountNumber();
+
+        this.newerFirst = false;
     }
 
     setAccountNumber = () => {
@@ -65,12 +46,27 @@ class bankAccount {
         const movement = new Movement(this, money, add);
         this.movementHistory.push(movement);
 
-        this.updateHistory(movement);
+        this.updateHistory();
     }
 
-    updateHistory(movement) {
+    updateHistory() {
+        let history = [...this.movementHistory];
+        
+        if(this.newerFirst) {
+            history = history.reverse();
+        }
+
+        this.buildHistory(history);
+    }
+
+    buildHistory(history) {
         const historyElement = document.getElementById('movement-history');
-        historyElement.appendChild(movement.htmlElement);
+
+        historyElement.innerHTML = '';
+
+        for(let movement of history){
+            historyElement.appendChild(movement.htmlElement);
+        }
     }
 
     showWarning() {
@@ -100,6 +96,7 @@ class Movement {
     buildHTMLElement(add) {
         // Fecha -> Descripción -> Monto inicial -> valor -> monto final
         let htmlElement = document.createElement('div');
+        htmlElement.classList.add('movement');
 
         let movementType = "Abono";
         let symbol = '+';
@@ -109,18 +106,37 @@ class Movement {
         }
 
         htmlElement.innerHTML = `
-        <div class="movement">
-            <div class="movement-date">${this.date}</div>
-            <div class="movement-description">${movementType}</div>
-            <div class="movement-initial">$${this.initialBalance}</div>
-            <div class="movement-quantity"><span class="main-green">${symbol}</span>$${this.quantity}</div>
-            <div class="movement-final">$${this.finalBalance}</div>
-        </div>
+        <div class="movement-date">${this.date}</div>
+        <div class="movement-description">${movementType}</div>
+        <div class="movement-initial">$${this.initialBalance}</div>
+        <div class="movement-quantity"><span class="main-green">${symbol}</span>$${this.quantity}</div>
+        <div class="movement-final">$${this.finalBalance}</div>
         `;
 
         return htmlElement;
     }
 }
+
+const createRandomAccNumber = (digits = 8) => {
+    let numberLength = Math.pow(10, digits);
+    const randomNumber = Math.random();
+
+    const accountNumber = Math.trunc(randomNumber * numberLength);
+    return accountNumber;
+}
+
+// Verifica que la cantidad enviada sea válida.
+// true solo si es un número mayor a 0
+const isValidQuantity = (quantity) => {
+    if(quantity > 0 && !isNaN(quantity))
+        return true;
+
+    return false;
+}
+
+//----------------------------------------
+
+const account = new bankAccount();
 
 const bankPanel = {
     addInput: document.getElementById('inputDeposito'), 
@@ -130,6 +146,7 @@ const bankPanel = {
 }
 
 const warningButton = document.getElementById('botonAviso');
+const orderSwapButton = document.getElementById('order-swap');
 
 // Agrega evento a boton "depositar" para sumar fondos a la cuenta
 bankPanel.addButton.addEventListener('click', () => {
@@ -145,12 +162,6 @@ bankPanel.withdrawButton.addEventListener('click', () => {
     account.withdrawFunds(money);
 });
 
-// Agrega evento a botón de aviso para ocultar el mensaje
-warningButton.addEventListener('click', () => {
-    const aviso = document.getElementById('aviso');
-    aviso.classList.add('hidde');
-});
-
 // No permite que los input tengan valores negativos
 bankPanel.addInput.addEventListener('change', () => {
     if(bankPanel.addInput.value < 0)
@@ -162,4 +173,15 @@ bankPanel.withdrawInput.addEventListener('change', () => {
         bankPanel.withdrawInput.value = 0;
 });
 
-const account = new bankAccount();
+// Agrega evento a botón de aviso para ocultar el mensaje
+warningButton.addEventListener('click', () => {
+    const aviso = document.getElementById('aviso');
+    aviso.classList.add('hidde');
+});
+
+//
+orderSwapButton.addEventListener('click', () => {
+    account.newerFirst = !(account.newerFirst);
+
+    account.updateHistory();
+});
