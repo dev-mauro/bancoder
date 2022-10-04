@@ -1,8 +1,8 @@
 class bankAccount {
-    constructor(base = {accountNumber: createRandomAccNumber(), balance: 0, movementHistory: []}) {
-        this.accountNumber = base.accountNumber;
-        this.balance = base.balance;
-        this.movementHistory = base.movementHistory;
+    constructor({accountNumber, balance, movementHistory}) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.movementHistory = movementHistory;
         this.balanceView = document.getElementById('saldo');
 
         this.setAccountNumber();
@@ -19,9 +19,8 @@ class bankAccount {
     }
 
     addFunds(money = 0) {
-        if(!isValidQuantity(money)){
+        if(!isValidQuantity(money))
             return;
-        }
 
         this.addMovement(true, money);
         this.balance += Number(money);
@@ -60,9 +59,8 @@ class bankAccount {
     updateHistory() {
         let history = [...this.movementHistory];
         
-        if(this.newerFirst) {
+        if(this.newerFirst)
             history = history.reverse();
-        }
 
         this.buildHistory(history);
     }
@@ -72,9 +70,8 @@ class bankAccount {
 
         historyElement.innerHTML = '';
 
-        for(let movement of history){
+        for(let movement of history)
             historyElement.innerHTML += movement.htmlElement;
-        }
     }
 
     showWarning() {
@@ -86,13 +83,12 @@ class bankAccount {
         let accountIndex = 0;
 
         //Si existen datos en localStorage, se busca el indice de esta cuenta bancaria
-        if(localData){
-            accountIndex = localData.bankAccounts.findIndex(account => account.accountNumber == this.accountNumber);
-        } else {
-            localData = {bankAccounts: []};
-        }
+        (localData)
+            ? accountIndex = localData.bankAccounts.findIndex(account => account.accountNumber == this.accountNumber)
+            : localData = {bankAccounts: []};
 
-        localData.bankAccounts[accountIndex] = { accountNumber: this.accountNumber,
+        localData.bankAccounts[accountIndex] = {
+            accountNumber: this.accountNumber,
             movementHistory: this.movementHistory,
             balance: this.balance
         }
@@ -172,12 +168,10 @@ const isValidQuantity = (quantity) => {
 //----------------------------------------
 
 let localData = JSON.parse(localStorage.getItem("bankAccounts"));
-// valor inicial para iniciar bankAccount
-let base = {accountNumber: createRandomAccNumber(), balance: 0, movementHistory: []};
 
-if(localData) {
-    base = localData.bankAccounts[0];
-}
+// 
+let base = localData.bankAccounts[0]
+    || {accountNumber: createRandomAccNumber(), balance: 0, movementHistory: []};
 
 const account = new bankAccount(base);
 
