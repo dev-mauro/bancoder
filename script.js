@@ -8,6 +8,20 @@ const createRandomAccNumber = (digits = 8) => {
     return accountNumber;
 }
 
+const greenNoti = (content) => {
+    return {
+        text: content,
+        duration: 3000,
+        close: true,
+        stopOnFocus: true,
+        className: 'greenNoti',
+        style: {
+            background: 'var(--main-green)',
+            color: 'var(--main-gray)'
+        }
+    };
+};
+
 //----------------------------------------
 
 const localData = JSON.parse(localStorage.getItem("bankAccounts"));
@@ -32,6 +46,7 @@ bankPanel.addButton.addEventListener('click', () => {
     const money = bankPanel.addInput.value;
     bankPanel.addInput.value = '';
     account.addFunds(money);
+    Toastify( greenNoti('Fondos agregados') ).showToast();
 });
 
 // Agrega evento a boton "retirar" para sacar fondos a la cuenta
@@ -39,6 +54,7 @@ bankPanel.withdrawButton.addEventListener('click', () => {
     const money = bankPanel.withdrawInput.value;
     bankPanel.withdrawInput.value = '';
     account.withdrawFunds(money);
+    Toastify( greenNoti('Fondos retirados') ).showToast();
 });
 
 // No permite que los input tengan valores negativos

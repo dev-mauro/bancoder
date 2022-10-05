@@ -286,3 +286,7 @@ input[type=number] {
     background-color: var(--main-gray);
     color: var(--main-green);
 }
+
+.greenNoti button{
+    color: inherit;
+}
