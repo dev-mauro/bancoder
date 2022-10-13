@@ -1,4 +1,5 @@
 import Movement from './Movement.js';
+import getUsdValue from '../usd.js';
 
 class BankAccount {
     constructor({accountNumber, balance, movementHistory}) {
@@ -6,6 +7,7 @@ class BankAccount {
         this.balance = balance;
         this.movementHistory = movementHistory;
         this.balanceView = document.getElementById('saldo');
+        this.usdBalanceView = document.querySelector('.usd-balance');
 
         this.setAccountNumber();
         this.updateBalance();
@@ -49,6 +51,7 @@ class BankAccount {
 
     updateBalance() {
         this.balanceView.innerHTML = this.balance;
+        this.updateUsdBalance();
     }
 
     addMovement(add, money) {
@@ -99,6 +102,13 @@ class BankAccount {
 
         const JSONData = JSON.stringify(localData);
         localStorage.setItem("bankAccounts", JSONData);
+    }
+
+    async updateUsdBalance() {
+        const usdValue = await getUsdValue();
+        const usd = (this.balance / usdValue).toFixed(3);
+
+        this.usdBalanceView.innerHTML = usd; 
     }
 }
 
